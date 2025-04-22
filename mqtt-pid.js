@@ -16,7 +16,7 @@ limitations under the License.
 
 ***/
 
-const PIDController = require('simple-pid-controller');
+const PIDController = require('simple-pid-controller-2');
 const mqtt = require('mqtt');
 
 const client  = mqtt.connect('mqtt://localhost'); // Add your MQTT broker URL

@@ -10,7 +10,7 @@ A Proportional-Integral-Derivative (PID) controller is a control loop feedback m
 To install this module, run the following command:
 
 ```sh
-npm install pid-controller
+npm install simple-pid-controller-2
 ```
 
 ## Usage
