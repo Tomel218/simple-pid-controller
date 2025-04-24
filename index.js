@@ -27,8 +27,8 @@ class PIDController {
    * @param {number} [k_p=1.0]    - Proportional gain.
    * @param {number} [k_i=0.0]    - Integral gain.
    * @param {number} [k_d=0.0]    - Derivative gain.
-   * @param {number} [i_max=Infinity] - Max integral contribution (positive or Infinity).
-   * @param {number} [i_min=-Infinity] - Min integral contribution (negative or -Infinity).
+   * @param {number} [i_max=Infinity] - Max integral contribution.
+   * @param {number} [i_min=-Infinity] - Min integral contribution.
    * @param {number} [dt=1.0]     - Time step between updates.
    */
   constructor(k_p = 1.0, k_i = 0.0, k_d = 0.0, i_max = Infinity, i_min = -Infinity, dt = 1.0) {
@@ -109,11 +109,19 @@ class PIDController {
 
     this.currentValue = currentValue;
     const error = this.target - this.currentValue;
-
     this.sumError += error * this.dt;
 
-    const maxSum = this.k_i !== 0 ? this.i_max / this.k_i : Infinity;
-    const minSum = this.k_i !== 0 ? this.i_min / this.k_i : -Infinity;
+    let maxSum, minSum;
+    if (this.k_i > 0) {
+      maxSum = this.i_max / this.k_i;
+      minSum = this.i_min / this.k_i;
+    } else if (this.k_i < 0) {
+      maxSum = this.i_min / this.k_i; // Achtung: getauscht
+      minSum = this.i_max / this.k_i;
+    } else {
+      maxSum = Infinity;
+      minSum = -Infinity;
+    }
 
     if (this.sumError > maxSum) {
       this.sumError = maxSum;
@@ -122,10 +130,11 @@ class PIDController {
     }
 
     const output = this.p + this.i + this.d;
-
     this.lastError = error;
+
     return output;
   }
 }
 
 module.exports = PIDController;
+
